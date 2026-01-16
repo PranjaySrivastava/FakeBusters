@@ -259,9 +259,10 @@ def analyze_ai():
         return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
+    port = int(os.environ.get('PORT', 5000))
     print("\n" + "="*70)
     print("FakeBusters Backend Server")
     print("="*70)
-    print("Server starting on http://localhost:5000")
+    print(f"Server starting on port {port}")
     print("="*70 + "\n")
-    app.run(debug=True, port=5000)
+    app.run(host='0.0.0.0', port=port, debug=False)

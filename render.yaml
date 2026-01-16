@@ -3,7 +3,11 @@ services:
     name: fakebusters-backend
     runtime: python
     buildCommand: pip install --upgrade pip && pip install -r requirements.txt
-    startCommand: gunicorn app:app --timeout 120 --workers 1
+    startCommand: gunicorn app:app --timeout 120 --workers 1 --bind 0.0.0.0:$PORT
     envVars:
       - key: PYTHON_VERSION
         value: 3.11.0
+      - key: IMAGE_MODEL_URL
+        sync: false
+      - key: AIGEN_MODEL_URL
+        sync: false

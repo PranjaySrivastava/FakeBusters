@@ -6,9 +6,9 @@ gunicorn==21.2.0
 # HTTP Requests
 requests==2.31.0
 
-# Core Deep Learning
-torch==2.5.1
-torchvision==0.20.1
+# Core Deep Learning - Compatible versions
+torch==2.4.1
+torchvision==0.19.1
 numpy==1.26.4
 
 # Computer Vision
@@ -17,11 +17,11 @@ Pillow==10.2.0
 
 # Data Processing
 pandas==2.3.3
-scikit-learn==1.8.0
+scikit-learn==1.5.2
 
 # Utilities
 tqdm==4.67.1
-matplotlib==3.7.2
+matplotlib==3.9.0
 
 # Face Detection
 facenet-pytorch==2.6.0

@@ -9,9 +9,57 @@ import os
 import base64
 import io
 import tempfile
+import requests
 
 app = Flask(__name__)
 CORS(app)
+
+# Download model function
+def download_model(url, path):
+    """Download model from URL if not exists"""
+    if not os.path.exists(path):
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+        print(f"Downloading model to {path}...")
+        try:
+            response = requests.get(url, stream=True, timeout=600)
+            response.raise_for_status()
+            total_size = int(response.headers.get('content-length', 0))
+            downloaded = 0
+            
+            with open(path, 'wb') as f:
+                for chunk in response.iter_content(chunk_size=8192):
+                    if chunk:
+                        f.write(chunk)
+                        downloaded += len(chunk)
+                        if total_size > 0:
+                            percent = (downloaded / total_size) * 100
+                            print(f"Progress: {percent:.1f}%", end='\r')
+            
+            print(f"\n✓ Downloaded {path}")
+            return True
+        except Exception as e:
+            print(f"✗ Failed to download {path}: {e}")
+            return False
+    else:
+        print(f"✓ Model already exists: {path}")
+        return True
+
+# Download models if URLs provided
+print("Checking for model files...")
+
+IMAGE_MODEL_URL = os.environ.get('IMAGE_MODEL_URL')
+AIGEN_MODEL_URL = os.environ.get('AIGEN_MODEL_URL')
+TEMPORAL_MODEL_URL = os.environ.get('TEMPORAL_MODEL_URL')  # For future use
+IMPROVED_DETECTOR_URL = os.environ.get('IMPROVED_DETECTOR_URL')  # For future use
+
+if IMAGE_MODEL_URL:
+    download_model(IMAGE_MODEL_URL, 'models/image_model.pth')
+if AIGEN_MODEL_URL:
+    download_model(AIGEN_MODEL_URL, 'models/aigen_model.pth')
+if TEMPORAL_MODEL_URL:
+    download_model(TEMPORAL_MODEL_URL, 'models/temporal_model.pth')
+if IMPROVED_DETECTOR_URL:
+    download_model(IMPROVED_DETECTOR_URL, 'models/improved_detector.pth')
 
 print("Loading models...")
 
@@ -264,5 +312,7 @@ if __name__ == '__main__':
     print("FakeBusters Backend Server")
     print("="*70)
     print(f"Server starting on port {port}")
+    print(f"Image model loaded: {image_model is not None}")
+    print(f"AI-Gen model loaded: {aigen_model is not None}")
     print("="*70 + "\n")
     app.run(host='0.0.0.0', port=port, debug=False)

@@ -1,0 +1,63 @@
+# Dataset folders (TOO LARGE)
+data/
+dataset/
+datasets/
+embeddings/
+images/
+images_balanced/
+
+# Trained models (TOO LARGE)
+models/
+*.pth
+*.h5
+*.pkl
+*.weights
+
+# Video files (TOO LARGE)
+*.mp4
+*.avi
+*.mov
+*.mkv
+required/
+required.zip
+test_images/
+
+# Virtual environment
+deepfake_env/
+env/
+venv/
+ENV/
+.venv
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Temporary files
+temp/
+tmp/
+*.tmp
+*.log
+
+# Build files
+build/
+dist/
+*.egg-info/
+
+# Environment variables
+.env
+.env.local

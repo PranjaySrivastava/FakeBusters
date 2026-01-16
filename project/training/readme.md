@@ -1,153 +1,124 @@
-# Deepfake Detection System
+# 🔍 AuraVerse 2.0 - Deepfake Detection System
 
-## Overview
-Complete deepfake detection system with image classification and video timestamp localization.
+Advanced AI-powered deepfake and AI-generated content detection using deep learning.
 
-## Team
-- **Person A**: Data preparation and preprocessing
-- **Person B**: Model training and development
-- **Person C**: Integration and demo interface
+## 🌟 Features
 
-## Features
-- ✅ Image deepfake detection (87.6% accuracy)
-- ✅ Video temporal analysis with timestamp localization
-- ✅ Confidence scores for all predictions
-- ✅ JSON output format for easy integration
+- **Universal Detector** - Detects ANY photo type (phone, screenshot, professional) - 82%+ accuracy
+- **AI-Generated Detection** - Identifies AI-created images - 97% accuracy
+- **Face-Swap Detection** - Detects deepfake face swaps - 87.6% accuracy
+- **Video Analysis** - Frame-by-frame detection with timestamps
+- **Ensemble Detection** - Combines multiple models for maximum accuracy
 
-## Models
-### 1. Face-Swap Detector
-- **Architecture**: ResNet18
-- **Accuracy**: 87.6%
-- **Dataset**: FaceForensics++ (20,000 balanced images)
-- **Training**: 15 epochs
+## 🚀 Quick Start
 
-### 2. Video Temporal Analyzer
-- **Method**: Frame-by-frame analysis
-- **Output**: Manipulated segments with timestamps
-
-## Project Structure
-```
-project/
-├── data/                    # Datasets (not in repo - too large)
-├── models/                  # Trained models (not in repo - too large)
-├── training/
-│   ├── train_image_model.py       # Train image detector
-│   ├── test_image_model.py        # Test image detector
-│   ├── predict_video.py           # Video analysis with timestamps
-│   └── train_temporal_model.py    # Temporal model training
-├── balance_dataset.py       # Dataset balancing script
-├── check_dataset.py         # Verify dataset
-├── extract_frames_quick.py  # Extract frames from videos
-├── organize_quick_start.py  # Organize FaceForensics dataset
-├── requirements.txt         # Dependencies
-└── README.md
-```
-
-## Installation
-
-### 1. Clone Repository
+### Installation
 ```bash
-git clone <your-repo-url>
-cd project
-```
+# Clone repository
+git clone https://github.com/PranjaySrivastava/FakeBusters.git
 
-### 2. Create Virtual Environment
-```bash
-conda create -n deepfake_env python=3.9
-conda activate deepfake_env
-```
+cd auraverse-2.0/project
 
-### 3. Install Dependencies
-```bash
+# Create virtual environment
+python -m venv deepfake_env
+deepfake_env\Scripts\activate  # Windows
+# source deepfake_env/bin/activate  # Linux/Mac
+
+# Install dependencies
 pip install -r requirements.txt
 ```
 
-### 4. Download Dataset
-Download FaceForensics++ from: https://github.com/ondyari/FaceForensics
+### Download Datasets
 
-### 5. Organize Dataset
+1. **CIFAKE Dataset** - [Download from Kaggle](https://www.kaggle.com/datasets/birdy654/cifake-real-and-ai-generated-synthetic-images)
+2. Extract to `data/cifake_raw/`
+3. Organize: `python organize_cifake_simple.py`
+
+### Download Pre-trained Models
+
+**Models are too large for GitHub. Download separately:**
+- Models are not included in this repository due to size limitations
+
+## 🎯 Usage
+
+### Detect Images
 ```bash
-python extract_frames_quick.py
-python balance_dataset.py
+# Best for ANY random photo (recommended)
+python test_improved_detector.py "your_image.jpg"
+
+# AI-generated detection
+python test_aigen_model_enhanced.py "your_image.jpg"
+
+# Ensemble (all models combined)
+python test_combined_detector.py "your_image.jpg"
 ```
 
-### 6. Train Models
+### Analyze Videos
 ```bash
-python training/train_image_model.py
+python training/predict_video.py "your_video.mp4"
 ```
 
-## Usage
+## 🎓 Training Models
 
-### Image Detection
+### Train Universal Detector (Recommended)
 ```bash
-python training/test_image_model.py <image_path>
+python train_improved_simple.py
 ```
+**Time:** ~20 minutes | **Output:** `models/improved_detector.pth`
 
-**Output:**
-```json
-{
-  "input_type": "image",
-  "is_fake": true,
-  "confidence": 0.89,
-  "prediction": "FAKE"
-}
-```
-
-### Video Detection with Timestamps
+### Train AI-Gen Detector
 ```bash
-python training/predict_video.py <video_path>
+python train_aigen_model.py
+```
+**Accuracy:** 97% | **Time:** ~15 minutes
+
+### Train Face-Swap Detector
+```bash
+python train_image_model.py
+```
+**Accuracy:** 87.6% | **Time:** ~20 minutes
+
+## 📊 Results
+
+| Model | Purpose | Accuracy |
+|-------|---------|----------|
+| Universal Detector | Any photo type | 82-85% |
+| AI-Gen Detector | AI-generated images | 97.1% |
+| Face-Swap Detector | Deepfake faces | 87.6% |
+
+## 📁 Project Structure
+```
+project/
+├── models/              # Trained models (download separately)
+├── data/                # Datasets (download separately)
+├── training/            # Training & prediction scripts
+├── test_improved_detector.py      # Main detector
+├── train_improved_simple.py       # Main training script
+└── requirements.txt
 ```
 
-**Output:**
-```json
-{
-  "input_type": "video",
-  "video_is_fake": true,
-  "overall_confidence": 0.9875,
-  "manipulated_segments": [
-    {
-      "start_time": "00:00:00",
-      "end_time": "00:00:08",
-      "confidence": 0.9465
-    }
-  ]
-}
+## 🛠️ Troubleshooting
+
+**Model says all images are fake?**
+- Use `test_improved_detector.py` instead
+- This model handles phone photos better
+
+**GPU out of memory?**
+- Reduce `batch_size` in training scripts to 16 or 8
+
+## 📧 Contact
+
+- GitHub: [@PranjaySrivastava](https://github.com/PranjaySrivastava)
+- Email: pranjay950@gmail.com
 ```
 
-## Performance
-
-### Metrics
-- Validation Accuracy: 87.6%
-- Training Accuracy: 90.6%
-- Dataset: 20,000 images (balanced)
-
-### Example Results
-- Face-swap deepfakes: 85-90% detection accuracy
-- Video analysis: Accurate timestamp localization
-
-## Requirements
-See `requirements.txt`
-
-## Model Files
-**Note**: Model files are too large for GitHub. Download from:
-- [Google Drive Link] (add your link after uploading)
-- Or train from scratch using instructions above
-
-## Limitations
-- Optimized for face-swap deepfakes (FaceForensics++ dataset)
-- May struggle with modern AI-generated images
-- Best performance on similar data to training set
-
-## Future Improvements
-- [ ] Add AI-generated image detection
-- [ ] Implement ensemble methods
-- [ ] Real-time video processing
-- [ ] Web interface
-
-## License
-Educational project - 2026
-
-## Acknowledgments
-- FaceForensics++ dataset
-- PyTorch team
-- ResNet architecture
+Make sure it has:
+```
+torch>=2.0.0
+torchvision>=0.15.0
+opencv-python>=4.8.0
+Pillow>=10.0.0
+numpy>=1.24.0
+tqdm>=4.65.0
+matplotlib>=3.7.0
+```

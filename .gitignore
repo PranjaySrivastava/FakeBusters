@@ -39,6 +39,7 @@ __pycache__/
 .vscode/
 .idea/
 *.swp
+*.swo
 
 # OS files
 .DS_Store
@@ -61,3 +62,6 @@ dist/
 # Environment variables
 .env
 .env.local
+
+# Keep folder structure
+!.gitkeep

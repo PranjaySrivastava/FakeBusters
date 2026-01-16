@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: fakebusters-api
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.9.0
+```
+
+### Step 3: Update `requirements.txt`
+
+Add `gunicorn` to your requirements.txt:
+```
+gunicorn==20.1.0

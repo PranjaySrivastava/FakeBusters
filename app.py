@@ -9,81 +9,41 @@ import os
 import base64
 import io
 import tempfile
-import requests
 
 app = Flask(__name__)
 CORS(app)
 
-# Download model function
-def download_model(url, path):
-    """Download model from URL if not exists"""
-    if not os.path.exists(path):
-        os.makedirs(os.path.dirname(path), exist_ok=True)
-        print(f"Downloading model to {path}...")
-        try:
-            response = requests.get(url, stream=True, timeout=600)
-            response.raise_for_status()
-            total_size = int(response.headers.get('content-length', 0))
-            downloaded = 0
-            
-            with open(path, 'wb') as f:
-                for chunk in response.iter_content(chunk_size=8192):
-                    if chunk:
-                        f.write(chunk)
-                        downloaded += len(chunk)
-                        if total_size > 0:
-                            percent = (downloaded / total_size) * 100
-                            print(f"Progress: {percent:.1f}%", end='\r')
-            
-            print(f"\n✓ Downloaded {path}")
-            return True
-        except Exception as e:
-            print(f"✗ Failed to download {path}: {e}")
-            return False
-    else:
-        print(f"✓ Model already exists: {path}")
-        return True
-
-# Download models if URLs provided
-print("Checking for model files...")
-
-IMAGE_MODEL_URL = os.environ.get('IMAGE_MODEL_URL')
-AIGEN_MODEL_URL = os.environ.get('AIGEN_MODEL_URL')
-TEMPORAL_MODEL_URL = os.environ.get('TEMPORAL_MODEL_URL')  # For future use
-IMPROVED_DETECTOR_URL = os.environ.get('IMPROVED_DETECTOR_URL')  # For future use
-
-if IMAGE_MODEL_URL:
-    download_model(IMAGE_MODEL_URL, 'models/image_model.pth')
-if AIGEN_MODEL_URL:
-    download_model(AIGEN_MODEL_URL, 'models/aigen_model.pth')
-if TEMPORAL_MODEL_URL:
-    download_model(TEMPORAL_MODEL_URL, 'models/temporal_model.pth')
-if IMPROVED_DETECTOR_URL:
-    download_model(IMPROVED_DETECTOR_URL, 'models/improved_detector.pth')
-
 print("Loading models...")
 
-# Image Model
+# Image Model (Deepfake Detection)
 image_model = models.resnet18(pretrained=False)
 image_model.fc = nn.Linear(image_model.fc.in_features, 2)
 if os.path.exists('models/image_model.pth'):
     image_model.load_state_dict(torch.load('models/image_model.pth', map_location='cpu', weights_only=False))
     image_model.eval()
-    print("✓ Image model loaded")
+    print("✓ Image model loaded (Deepfake Detection)")
 else:
     image_model = None
     print("⚠ Image model not found")
 
-# AI-Gen Model
-aigen_model = models.resnet18(pretrained=False)
-aigen_model.fc = nn.Linear(aigen_model.fc.in_features, 2)
-if os.path.exists('models/aigen_model.pth'):
-    aigen_model.load_state_dict(torch.load('models/aigen_model.pth', map_location='cpu', weights_only=False))
+# Improved Detector Model (AI-Generated Detection)
+aigen_model = models.resnet34(weights=None)
+num_features = aigen_model.fc.in_features
+aigen_model.fc = nn.Sequential(
+    nn.Dropout(0.5),
+    nn.Linear(num_features, 256),
+    nn.ReLU(),
+    nn.Dropout(0.3),
+    nn.Linear(256, 2)
+)
+
+if os.path.exists('models/improved_detector.pth'):
+    aigen_model.load_state_dict(torch.load('models/improved_detector.pth', map_location='cpu', weights_only=False))
     aigen_model.eval()
-    print("✓ AI-Gen model loaded")
+    print("✓ Improved Detector loaded (AI-Generated Detection)")
 else:
     aigen_model = None
-    print("⚠ AI-Gen model not found")
+    print("⚠ Improved Detector not found")
 
 # Transform
 transform = transforms.Compose([
@@ -93,6 +53,7 @@ transform = transforms.Compose([
 ])
 
 def predict_frame(model, frame):
+    """Predict if a single frame is fake"""
     frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
     pil_image = Image.fromarray(frame_rgb)
     image_tensor = transform(pil_image).unsqueeze(0)
@@ -104,12 +65,14 @@ def predict_frame(model, frame):
     return fake_prob
 
 def format_timestamp(seconds):
+    """Convert seconds to HH:MM:SS format"""
     hours = int(seconds // 3600)
     minutes = int((seconds % 3600) // 60)
     secs = int(seconds % 60)
     return f"{hours:02d}:{minutes:02d}:{secs:02d}"
 
 def find_segments(predictions, fps, min_segment_length=1.0):
+    """Group consecutive fake frames into segments"""
     segments = []
     current_segment = None
     
@@ -152,6 +115,7 @@ def find_segments(predictions, fps, min_segment_length=1.0):
 
 @app.route('/api/health', methods=['GET'])
 def health_check():
+    """Check if server is running and which models are available"""
     return jsonify({
         'status': 'ok',
         'models': {
@@ -162,6 +126,7 @@ def health_check():
 
 @app.route('/api/analyze/image', methods=['POST'])
 def analyze_image():
+    """Analyze image for deepfake detection"""
     if not image_model:
         return jsonify({'error': 'Image model not loaded'}), 500
     
@@ -197,6 +162,7 @@ def analyze_image():
 
 @app.route('/api/analyze/video', methods=['POST'])
 def analyze_video():
+    """Analyze video for deepfake detection"""
     if not image_model:
         return jsonify({'error': 'Video model not loaded'}), 500
     
@@ -273,8 +239,9 @@ def analyze_video():
 
 @app.route('/api/analyze/ai', methods=['POST'])
 def analyze_ai():
+    """Analyze image for AI-generation detection using Improved Detector"""
     if not aigen_model:
-        return jsonify({'error': 'AI-Gen model not loaded'}), 500
+        return jsonify({'error': 'AI-Gen model (Improved Detector) not loaded'}), 500
     
     try:
         data = request.get_json()
@@ -307,12 +274,11 @@ def analyze_ai():
         return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 5000))
     print("\n" + "="*70)
     print("FakeBusters Backend Server")
     print("="*70)
-    print(f"Server starting on port {port}")
-    print(f"Image model loaded: {image_model is not None}")
-    print(f"AI-Gen model loaded: {aigen_model is not None}")
+    print("Server starting on http://localhost:5000")
+    print(f"✓ Image Model (Deepfake): {'Loaded' if image_model else 'Not Found'}")
+    print(f"✓ AI-Gen Model (Improved Detector): {'Loaded' if aigen_model else 'Not Found'}")
     print("="*70 + "\n")
-    app.run(host='0.0.0.0', port=port, debug=False)
+    app.run(debug=True, port=5000)

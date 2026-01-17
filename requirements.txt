@@ -7,8 +7,8 @@ gunicorn==21.2.0
 requests==2.31.0
 
 # Core Deep Learning - Compatible versions
-torch==2.4.1
-torchvision==0.19.1
+torch>=2.2.0 --index-url https://download.pytorch.org/whl/cpu
+torchvision>=0.17.0 --index-url https://download.pytorch.org/whl/cpu
 numpy==1.26.4
 
 # Computer Vision
@@ -25,3 +25,4 @@ matplotlib==3.9.0
 
 # Face Detection
 facenet-pytorch==2.6.0
+

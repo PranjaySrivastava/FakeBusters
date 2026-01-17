@@ -1,0 +1,28 @@
+# Web Framework
+Flask==3.1.2
+flask-cors==5.0.0
+gunicorn==21.2.0
+
+# HTTP Requests
+requests==2.31.0
+
+# Core Deep Learning - Compatible versions
+torch>=2.2.0 --index-url https://download.pytorch.org/whl/cpu
+torchvision>=0.17.0 --index-url https://download.pytorch.org/whl/cpu
+numpy==1.26.4
+
+# Computer Vision
+opencv-python-headless==4.10.0.84
+Pillow==10.2.0
+
+# Data Processing
+pandas==2.3.3
+scikit-learn==1.5.2
+
+# Utilities
+tqdm==4.67.1
+matplotlib==3.9.0
+
+# Face Detection
+facenet-pytorch==2.6.0
+

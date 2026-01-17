@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>FakeBusters | AI Forensics Platform</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+    <h1>FakeBusters</h1>
+    <p>AI-Powered Media Forensics & Deepfake Detection Platform</p>
+</header>
+
+<section class="container">
+
+    <!-- Image Deepfake -->
+    <div class="card">
+        <div class="card-header">
+            <h2>Image Deepfake Detection</h2>
+            <span class="delete-btn" onclick="resetImage()">🗑</span>
+        </div>
+
+        <input type="file" id="imageUpload" accept="image/*" onchange="previewImage(event, 'imagePreview')">
+        <img id="imagePreview" class="preview">
+
+        <button onclick="analyzeImage()">Analyze Image</button>
+
+        <div class="spinner" id="imageSpinner"></div>
+
+        <div class="confidence-ring">
+            <span id="imageConfidenceText">0%</span>
+        </div>
+
+        <div class="result" id="imageResult"></div>
+        <button class="pdf-btn" onclick="downloadImageReport()">Download PDF Report</button>
+    </div>
+
+    <!-- Video Deepfake -->
+    <div class="card">
+        <div class="card-header">
+            <h2>Video Deepfake Detection</h2>
+            <span class="delete-btn" onclick="resetVideo()">🗑</span>
+        </div>
+
+        <input type="file" id="videoUpload" accept="video/*" onchange="previewVideo(event)">
+        <video id="videoPreview" class="preview" controls></video>
+
+        <button onclick="analyzeVideo()">Analyze Video</button>
+
+        <div class="spinner" id="videoSpinner"></div>
+
+        <div class="confidence-ring">
+            <span id="videoConfidenceText">0%</span>
+        </div>
+
+        <div class="timeline" id="videoTimeline">
+            <div class="timeline-bar">
+                <div class="fake-segment seg1"></div>
+                <div class="fake-segment seg2"></div>
+            </div>
+            <div class="timeline-labels">
+                <span>0:00</span>
+                <span>0:30</span>
+                <span>1:00</span>
+                <span>1:30</span>
+            </div>
+        </div>
+
+        <div class="result" id="videoResult"></div>
+        <button class="pdf-btn" onclick="downloadVideoReport()">Download PDF Report</button>
+    </div>
+
+    <!-- AI Generated -->
+    <div class="card">
+        <div class="card-header">
+            <h2>AI Generated Image Detection</h2>
+            <span class="delete-btn" onclick="resetAI()">🗑</span>
+        </div>
+
+        <input type="file" id="aiImageUpload" accept="image/*" onchange="previewImage(event, 'aiPreview')">
+        <img id="aiPreview" class="preview">
+
+        <button onclick="analyzeAI()">Analyze Image</button>
+
+        <div class="spinner" id="aiSpinner"></div>
+
+        <div class="confidence-ring">
+            <span id="aiConfidenceText">0%</span>
+        </div>
+
+        <div class="result" id="aiResult"></div>
+        <button class="pdf-btn" onclick="downloadAIReport()">Download PDF Report</button>
+    </div>
+
+</section>
+
+<footer>
+    <p>FakeBusters © 2026 | AI Media Forensics Platform</p>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="script.js"></script>
+
+</body>
+</html>

@@ -1,7 +1,7 @@
 const { jsPDF } = window.jspdf;
 
 // Backend API URL
-const API_URL = 'http://localhost:5000/api';
+const API_URL = 'https://salil-ind-fake-buster.hf.space/api';
 
 // Store results for PDF generation
 let imageResult = null;
